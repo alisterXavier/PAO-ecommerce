@@ -3,6 +3,7 @@
 # backend
 
 version: 2.1
+setup: true
 
 orbs:
   the-great:
