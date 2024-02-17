@@ -22,7 +22,7 @@ jobs:
 
       - run:
           name: Install deps
-          command: "cd ./app && npm install"
+          command: cd ./app && npm install
 
       - cypress/run-tests:
           start-command: npm run dev
@@ -36,42 +36,42 @@ jobs:
           path: ./app/cypress/screenshots
           when: on_fail
 
-  publish-to-main-branch:
-    docker:
-      - image: cimg/base:2024.01
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints: "SHA256:h3dWritaS+YZEvEuRDqLwqoyX+gA4PwvAhDh+aFmofw"
+  # publish-to-main-branch:
+  #   docker:
+  #     - image: cimg/base:2024.01
+  #   steps:
+  #     - checkout
+  #     - add_ssh_keys:
+  #         fingerprints: "SHA256:h3dWritaS+YZEvEuRDqLwqoyX+gA4PwvAhDh+aFmofw"
 
-      - run:
-          name: Push to production branch
-          command: git push origin main-test-branch:main
+  #     - run:
+  #         name: Push to production branch
+  #         command: git push origin main-test-branch:main
 
-  deploy-to-vercel:
-    docker:
-      - image: node:latest
-        environment:
-          VERCEL_ORG_ID: $VERCEL_ORG_ID
-          VERCEL_PASSWORD_ID: $VERCEL_PASSWORD_ID
-    steps:
-      - checkout
+  # deploy-to-vercel:
+  #   docker:
+  #     - image: node:latest
+  #       environment:
+  #         VERCEL_ORG_ID: $VERCEL_ORG_ID
+  #         VERCEL_PASSWORD_ID: $VERCEL_PASSWORD_ID
+  #   steps:
+  #     - checkout
 
-      - run:
-          name: Install vercel
-          command: npm i -g vercel@latest
+  #     - run:
+  #         name: Install vercel
+  #         command: npm i -g vercel@latest
 
-      - run:
-          name: PULL VERCEL ENVIRONMENT
-          command: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+  #     - run:
+  #         name: PULL VERCEL ENVIRONMENT
+  #         command: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
 
-      - run:
-          name: BUILD PROJECT
-          command: vercel build --prod --token=$VERCEL_TOKEN
+  #     - run:
+  #         name: BUILD PROJECT
+  #         command: vercel build --prod --token=$VERCEL_TOKEN
 
-      - run:
-          name: DEPLOY PROJECT
-          command: vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+  #     - run:
+  #         name: DEPLOY PROJECT
+  #         command: vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
 
 workflows:
   the-great-gatsby:
@@ -82,11 +82,11 @@ workflows:
               only:
                 - main-test-branch
 
-      - publish-to-main-branch:
-          requires:
-            - e2e-tests
+      # - publish-to-main-branch:
+      #     requires:
+      #       - e2e-tests
 
-      - deploy-to-vercel:
-          requires:
-            - e2e-tests
-            - publish-to-main-branch
+      # - deploy-to-vercel:
+      #     requires:
+      #       - e2e-tests
+      #       - publish-to-main-branch
