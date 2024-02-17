@@ -25,19 +25,13 @@ jobs:
           name: Install deps
           command: "cd ./app && npm install"
 
-      - run:
-          name: Run app in background
-          command: "cd ./app && npm run dev"
-          background: true
-      
-      - run:
-          name: Wait for app to be ready
-          command: npx wait-on@latest http://localhost:3000
-
       - cypress/run-tests:
-          # start-command: npm run dev
-          cypress-command: "npx cypress run"
+          start-command: npm run dev
+          cypress-command: "npx wait-on@latest http://localhost:3000 && npx cypress run"
           working-directory: ./app
+
+      - store_test_results:
+          when: on_fail
 
       - store_artifacts:
           path: ./app/cypress/screenshots
@@ -83,17 +77,17 @@ jobs:
 workflows:
   the-great-gatsby:
     jobs:
-      # - publish-to-main-branch:
-      #     requires:
-      #       - e2e-tests
-
-      # - deploy-to-vercel:
-      #     requires:
-      #       - e2e-tests
-      #       - publish-to-main-branch
-
       - e2e-tests:
           filters:
             branches:
               only:
-                - main
+                - main-test-branch
+
+      - publish-to-main-branch:
+          requires:
+            - e2e-tests
+
+      - deploy-to-vercel:
+          requires:
+            - e2e-tests
+            - publish-to-main-branch
