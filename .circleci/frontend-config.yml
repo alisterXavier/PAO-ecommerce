@@ -43,7 +43,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: "8d:81:26:dd:de:75:b3:c2:96:f2:c6:47:2f:8f:fb:8f"
+          fingerprints: "SHA256:h3dWritaS+YZEvEuRDqLwqoyX+gA4PwvAhDh+aFmofw"
 
       - run:
           name: Push to production branch
