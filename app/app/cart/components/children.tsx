@@ -231,10 +231,14 @@ export const Cart = ({ user, cart, isLoading, updateCart }: CartType) => {
                         ${cart.total}
                       </p>
                     </div>
-                    <Link href="/checkout" className="w-full h-full" data-cy={'test-checkout-btn'}>
+                    <Link
+                      href="/checkout"
+                      className="w-full h-full"
+                      data-cy={'test-checkout-btn'}
+                    >
                       <Button
                         w={'100%'}
-                        variant="light"
+                        variant="filled"
                         color={'var(--testColor)'}
                       >
                         Checkout

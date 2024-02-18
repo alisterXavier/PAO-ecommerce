@@ -84,7 +84,7 @@ h6 {
 
 .main-wrapper {
   padding: 10px;
-  min-height: 100%;
+  min-height: 100vh;
 }
 .login-container {
   font-family: 'Montblac-reg' !important;
