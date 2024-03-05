@@ -1,6 +1,7 @@
 import { Button, TextInput, Text } from '@mantine/core';
 import Image from 'next/image';
-import logo from '@/public/images/Logo.jpg';
+import logo_black from '@/public/images/logo-black.jpg';
+import logo_white from '@/public/images/logo-white.jpg';
 import {
   IconBrandFacebook,
   IconBrandInstagram,
@@ -143,21 +144,33 @@ export const FooterSection = ({ enableDark }: { enableDark: boolean }) => (
       </div>
       <div className="right-section flex flex-col items-start justify-end w-[40%]">
         <div className="social-medias flex">
-          <IconBrandInstagram className='mr-3' size={30} color="var(--testColor)" />
-          <IconBrandFacebook className='mr-3' size={30} color="var(--testColor)" />
-          <IconBrandTwitter className='mr-3' size={30} color="var(--testColor)" />
+          <IconBrandInstagram
+            className="mr-3"
+            size={30}
+            color="var(--testColor)"
+          />
+          <IconBrandFacebook
+            className="mr-3"
+            size={30}
+            color="var(--testColor)"
+          />
+          <IconBrandTwitter
+            className="mr-3"
+            size={30}
+            color="var(--testColor)"
+          />
         </div>
         <figure className="relative w-[300px] h-[200px]">
           <Image
             sizes="100%"
             alt="logo"
-            src={logo}
+            src={logo_black}
             fill
             quality={100}
             style={{
               objectFit: 'contain',
             }}
-            className="mix-blend-multiply"
+            className={"mix-blend-multiply"}
           />
         </figure>
       </div>

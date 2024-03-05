@@ -6,7 +6,7 @@ import Image from 'next/image';
 import * as React from 'react';
 import { supabase } from '@/shared/supabaseConfig';
 import { UserMetadata } from '@supabase/supabase-js';
-import logo from '@/public/images/Logo.jpg';
+import logo from '@/public/images/logo-black.jpg';
 import Link from 'next/link';
 
 interface IButton {
