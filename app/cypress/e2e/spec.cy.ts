@@ -577,7 +577,7 @@ describe('App flow', () => {
   before(() => {
     cy.viewport(window.screen.width, window.screen.height);
 
-    cy.intercept('GET', 'http://localhost:5001/products/men?price=', {
+    cy.intercept('GET', 'http://localhost:5001/products/men', {
       data: mockData,
     });
     CateArray.forEach((item) => {
@@ -705,6 +705,7 @@ describe('App flow', () => {
 
       // Checkout Page
       cy.get('[data-cy="test-checkout-btn"]').click();
+      cy.wait(200)
       cy.get('[data-cy="test-first-name-input"]').type('typewriter');
       cy.get('[data-cy="test-last-name-input"]').type('101');
       cy.get('[data-cy="test-checkout-btn"]').click();
