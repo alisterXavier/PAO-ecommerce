@@ -651,6 +651,7 @@ describe('App flow', () => {
 
       // Product Card -- Tests
       cy.get('[data-cy="test-small-product-card"] div:last').click();
+      cy.wait(200)
 
       // Product Page -- Tests
       const selectedProduct = mockData[mockData.length - 1];

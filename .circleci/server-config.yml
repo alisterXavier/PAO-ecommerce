@@ -37,4 +37,6 @@ workflows:
   the-great-depression:
     jobs:
       - create-docker-image-and-publish-to-dockerhub
-      - publish-to-main-branch
+      - publish-to-main-branch:
+          requires:
+            - create-docker-image-and-publish-to-dockerhub

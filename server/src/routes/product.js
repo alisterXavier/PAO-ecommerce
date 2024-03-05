@@ -63,7 +63,7 @@ app.get('/products/:category', async (req, res) => {
   } else return res.status(400).json({ error: 'Category does not exist' });
 });
 
-//endpoint for a single product
+// Endpoint for a single product
 app.get('/product/:productId', async (req, res) => {
   const { productId } = req.params;
 
@@ -87,7 +87,7 @@ app.get('/product/:productId', async (req, res) => {
   }
 });
 
-//Search functionality
+// Search functionality endpoint
 app.get('/search/:searchString', async (req, res) => {
   const { searchString } = req.params;
 

@@ -4,7 +4,7 @@ import { authUser } from '../middleware';
 
 const app = express();
 
-// Update Cart
+// Update customer Cart
 app.patch('/cart', authUser, async (req, res) => {
   const { customerId, products, id, total } = req.body;
 
@@ -39,6 +39,7 @@ app.patch('/cart', authUser, async (req, res) => {
   }
 });
 
+// Get customer cart
 app.get('/cart/:id', authUser, async (req, res) => {
   const { id } = req.params;
 

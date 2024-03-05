@@ -4,7 +4,7 @@ import { authUser } from '../middleware';
 
 const app = express();
 
-// Create a final order
+// Process customer order
 app.post('/order/:customerId/:cartId', authUser, async (req, res) => {
   const { cartId, customerId } = req.params;
 
@@ -50,7 +50,7 @@ app.post('/order/:customerId/:cartId', authUser, async (req, res) => {
   }
 });
 
-// Getting orders
+// Retrieve customer orders
 app.get('/orders/:id', authUser, async (req, res) => {
   const { id } = req.params;
 
