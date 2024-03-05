@@ -29,8 +29,14 @@ function Queries(queries: Queries, session?: Session) {
       },
       options?: SWRConfiguration
     ): SWRResponse<ProductsResponse> => {
-      return useSwr(['useGetProducts' + params.category], () =>
-        queries.useGetProducts(params)
+      return useSwr(
+        [
+          'useGetProducts' +
+            params.category +
+            params.filterOptions?.type +
+            params.filterOptions?.price,
+        ],
+        () => queries.useGetProducts(params)
       );
     },
     useGetCustomerByCustomerId: (

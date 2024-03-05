@@ -553,3 +553,8 @@ h6 {
     }
   }
 }
+
+/* Filter MOdal */
+.mantine-Modal-inner {
+  justify-content: end !important;
+}

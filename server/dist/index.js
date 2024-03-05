@@ -40012,7 +40012,7 @@ var import_dayjs = __toESM(require_dayjs_min());
 var app3 = (0, import_express3.default)();
 app3.get("/products/:category", async (req, res) => {
   const { category } = req.params;
-  const { filter } = req.query;
+  const { type, price } = req.query;
   const currWeek = (0, import_dayjs.default)().subtract(1, "month").startOf("month").format();
   let { data: categoryList, error: categoryListError } = await supabase.from("Categories").select().eq("type", category);
   if (categoryList && categoryList.length > 0) {

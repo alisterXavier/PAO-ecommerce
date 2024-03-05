@@ -7,7 +7,8 @@ const app = express();
 
 app.get('/products/:category', async (req, res) => {
   const { category } = req.params;
-  const { filter } = req.query;
+  const {type, price} = req.query;
+
   const currWeek = dayjs().subtract(1, 'month').startOf('month').format();
 
   let { data: categoryList, error: categoryListError } = await supabase

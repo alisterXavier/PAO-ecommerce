@@ -5,27 +5,23 @@ import { SkeletonContainer } from '@/app/Components/SkeletonComp';
 import { IconChevronRight } from '@tabler/icons-react';
 import { useState } from 'react';
 import Link from 'next/link';
+import FilterWrapper from '@/app/Components/FilterWrapper';
 
 const Category = ({ params }: { params: { category: string } }) => {
   const [filterByType, setFilterByType] = useState<string[]>([]);
   const [filterByPrice, setFilterByPrice] = useState<string>('');
-  // const [filterByPriceRange, setFilterByPriceRange] = useState<number[]>([10, 2000]);
+
+  const filter = () => {};
 
   const parameters = {
     category: params.category,
     filterOptions: {
       type: filterByType,
       price: filterByPrice,
-      // priceMin: filterByPriceRange[0],
-      // priceMax: filterByPriceRange[1],
     },
   };
   const { data, productsIsLoading, productsError } = useProducts({
     category: params.category,
-    filterOptions: {
-      type: filterByType,
-      price: filterByPrice,
-    },
   });
 
   return (
@@ -59,6 +55,14 @@ const Category = ({ params }: { params: { category: string } }) => {
           ) : !data ? (
             <p>No products to display.</p>
           ) : (
+            // <FilterWrapper
+            //   type={parameters.category}
+            //   filterByPriceFn={{ filterByPrice, setFilterByPrice }}
+            //   filterByTypeFn={{ filterByType, setFilterByType }}
+            // >
+            //   {
+            //   }
+            // </FilterWrapper>
             data.data.map((product, index) => (
               <Small id={product.id} key={index} product={product} />
             ))

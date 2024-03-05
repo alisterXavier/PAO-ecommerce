@@ -243,6 +243,7 @@ const CheckoutInformation = ({
                   zIndex: 1,
                 },
               }}
+              data-cy="test-first-name-input"
             />
             <TextInput
               {...form.getInputProps('information.last_name')}
@@ -256,6 +257,7 @@ const CheckoutInformation = ({
                   zIndex: 1,
                 },
               }}
+              data-cy="test-last-name-input"
               label="Last Name *"
               w={300}
               m={10}
@@ -508,6 +510,7 @@ const Checkout = () => {
                     <Button
                       w={'100%'}
                       className="!bg-white !text-[var(--testColor)]"
+                      data-cy="test-checkout-btn"
                       onClick={() => {
                         if (!form.validate().hasErrors) {
                           updateOrder(cart.id, user?.data.user?.id);

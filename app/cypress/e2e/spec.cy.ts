@@ -576,13 +576,6 @@ mockCart.total = mockCart.products.reduce((i, acc) => {
 describe('App flow', () => {
   before(() => {
     cy.viewport(window.screen.width, window.screen.height);
-    cy.readFile('public/images/Logo.jpg', null).then((img) => {
-      cy.intercept('_next/image*', {
-        statusCode: 200,
-        headers: { 'Content-Type': 'image/png' },
-        body: img.buffer,
-      });
-    });
 
     cy.intercept('GET', 'http://localhost:5001/products/men?price=', {
       data: mockData,
@@ -624,7 +617,7 @@ describe('App flow', () => {
         failOnStatusCode: false,
       });
       cy.get('[data-cy="test-signIn-container"]').within(() => {
-        cy.get('[data-cy="test-email-input"]').type('fidosa9512@bitofee.com');
+        cy.get('[data-cy="test-email-input"]').type('geyawi3118@mcuma.com');
         cy.get('[data-cy="test-password-input"]').type('123456789');
         cy.get('[data-cy="test-confirm-btn"]').click();
       });
@@ -712,7 +705,11 @@ describe('App flow', () => {
 
       // Checkout Page
       cy.get('[data-cy="test-checkout-btn"]').click();
+      cy.get('[data-cy="test-first-name-input"]').type('typewriter');
+      cy.get('[data-cy="test-last-name-input"]').type('101');
+      cy.get('[data-cy="test-checkout-btn"]').click();
 
+      
       // const userOptions = cy.get('[data-cy="test-user-options"]');
       // userOptions.should('not.be.visible');
       // cy.get('[data-cy="test-user"]')

@@ -1,11 +1,8 @@
 import {
   Checkbox,
   CheckboxGroup,
-  RangeSlider,
-  Slider,
-  TextInput,
 } from '@mantine/core';
-import React, { ReactElement, useState } from 'react';
+import React, {  } from 'react';
 
 type FilterProps = {
   type: string;
