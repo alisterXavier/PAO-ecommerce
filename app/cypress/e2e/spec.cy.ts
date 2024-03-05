@@ -650,25 +650,22 @@ describe('App flow', () => {
       );
 
       // Product Card -- Tests
-      cy.get('[data-cy="test-small-product-card"] div:last')
-        .click()
-        .then(() => {
-          // Product Page -- Tests
-          const selectedProduct = mockData[mockData.length - 1];
-          cy.get('[data-cy="test-product-image"]');
-          cy.get('[data-cy="test-product-name"]').should(
-            'have.text',
-            selectedProduct.productName
-          );
-          cy.get('[data-cy="test-product-description"]').should(
-            'have.text',
-            selectedProduct.description
-          );
-          cy.get('[data-cy="test-product-price"]').contains(
-            selectedProduct.price
-          );
-          cy.get('[data-cy="test-add-product"]').click();
-        });
+      cy.get('[data-cy="test-small-product-card"] div:last').click();
+      cy.wait(2000)
+
+      // Product Page -- Tests
+      const selectedProduct = mockData[mockData.length - 1];
+      cy.get('[data-cy="test-product-image"]');
+      cy.get('[data-cy="test-product-name"]').should(
+        'have.text',
+        selectedProduct.productName
+      );
+      cy.get('[data-cy="test-product-description"]').should(
+        'have.text',
+        selectedProduct.description
+      );
+      cy.get('[data-cy="test-product-price"]').contains(selectedProduct.price);
+      cy.get('[data-cy="test-add-product"]').click();
 
       cy.get('[data-cy="test-cart"]').contains(
         mockCart.products.reduce((a, b) => {
@@ -709,11 +706,12 @@ describe('App flow', () => {
 
       // Checkout Page
       cy.get('[data-cy="test-checkout-btn"]').click();
-      cy.wait(200);
+      cy.wait(200)
       cy.get('[data-cy="test-first-name-input"]').type('typewriter');
       cy.get('[data-cy="test-last-name-input"]').type('101');
       cy.get('[data-cy="test-checkout-btn"]').click();
 
+      
       // const userOptions = cy.get('[data-cy="test-user-options"]');
       // userOptions.should('not.be.visible');
       // cy.get('[data-cy="test-user"]')
