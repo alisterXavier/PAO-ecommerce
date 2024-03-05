@@ -271,7 +271,7 @@ export const Cart = ({ user, cart, isLoading, updateCart }: CartType) => {
                     {cartDrift && (
                       <div className="w-full flex justify-end">
                         <Button
-                          color="var(--testColor)"
+                          className="!bg-[var(--testColor)]"
                           mr={2}
                           radius={5}
                           onClick={handleUpdateCart}
@@ -280,7 +280,7 @@ export const Cart = ({ user, cart, isLoading, updateCart }: CartType) => {
                         </Button>
                         <Button
                           type="reset"
-                          color="maroon"
+                          className="!bg-[maroon]"
                           radius={5}
                           onClick={handleReset}
                         >
