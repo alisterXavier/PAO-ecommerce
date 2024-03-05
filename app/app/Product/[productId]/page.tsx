@@ -89,6 +89,7 @@ const SingleProduct = ({ params }: { params: { productId: string } }) => {
                         src={selectedImage}
                         fill
                         quality={100}
+                        sizes="100%"
                         style={{
                           objectFit: 'contain',
                         }}
@@ -108,6 +109,7 @@ const SingleProduct = ({ params }: { params: { productId: string } }) => {
                         }}
                       >
                         <Image
+                          sizes="100%"
                           className={`border-2 ${
                             selectedImage === item
                               ? 'border-[var(--testColor)]'

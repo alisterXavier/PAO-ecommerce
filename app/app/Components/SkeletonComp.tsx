@@ -40,5 +40,5 @@ export const SkeletonContainer = ({
     );
   }
 
-  return <div className={`flex ${wrap && 'flex-wrap'}`}>{skeletons}</div>;
+  return skeletons;
 };

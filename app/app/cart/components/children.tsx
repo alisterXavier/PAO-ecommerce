@@ -5,26 +5,80 @@ import { UserMetadata } from '@supabase/supabase-js';
 import { Button, Table, Text } from '@mantine/core';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { arraysEqual } from '@/shared/helpers/debounce';
 
 type cartItemProps = components['schemas']['Products'] & {
   quantity: number;
 };
+type CartType = {
+  user?: UserMetadata | null;
+  cart?: components['schemas']['Carts'] | undefined;
+  updateCart?: {
+    removeCartItem: (product: components['schemas']['Products']) => void;
+    addCartItem: (
+      product: components['schemas']['Products'],
+      quantity: number
+    ) => void;
+    updateCartItem: (
+      product:
+        | components['schemas']['Products']
+        | (components['schemas']['Products'] & { quantity: number })[],
+      quantity?: number
+    ) => void;
+  };
+  isLoading?: boolean;
+};
+type updateEnabledCartTable = CartType & {
+  updateEnabled: true;
+  data?: components['schemas']['Carts'] | undefined;
+  setData: React.Dispatch<
+    React.SetStateAction<components['schemas']['Carts'] | undefined>
+  >;
+};
+
+type updateDisabledCartTable = {
+  data?: components['schemas']['Carts'] | undefined;
+  updateEnabled: false;
+};
+type CartTableType = updateDisabledCartTable | updateEnabledCartTable;
 
 const CartItem = ({
   data,
+  setData,
   index,
   removeItem,
   updateEnabled,
 }: {
   data: cartItemProps;
+  setData: React.Dispatch<
+    React.SetStateAction<components['schemas']['Carts'] | undefined>
+  >;
   index: number;
-  removeItem?: (
-    product: components['schemas']['Products'],
-    quantity: number
-  ) => void;
+  removeItem?: (product: components['schemas']['Products']) => void;
   updateEnabled?: boolean;
 }) => {
-  const [count, handler] = useCounter(data.quantity, { min: 0, max: 10 });
+  const handleDecrement = () => {
+    if (data.quantity > 1)
+      setData((prev) => {
+        let updated = prev?.products.map((i) => {
+          if (i.id === data.id) return { ...i, quantity: i?.quantity - 1 };
+          else return i;
+        });
+        return { ...prev, products: updated } as components['schemas']['Carts'];
+      });
+  };
+  const handleIncrement = () => {
+    if (data.quantity < 10)
+      setData((prev) => {
+        let updated = prev?.products.map((i) => {
+          if (i.id === data.id) return { ...i, quantity: i?.quantity + 1 };
+          else return i;
+        });
+
+        return { ...prev, products: updated } as components['schemas']['Carts'];
+      });
+  };
   return (
     <Table.Tr
       key={`wrapper ${data.id + index}`}
@@ -42,6 +96,7 @@ const CartItem = ({
                   className={`transition-all duration-200 ${
                     index === 1 && 'hover:opacity-0'
                   }`}
+                  sizes="100%"
                   src={image}
                   fill
                   quality={100}
@@ -85,7 +140,7 @@ const CartItem = ({
                 variant="light"
                 bg={'transparent'}
                 color="var(--testColor)"
-                onClick={handler.decrement}
+                onClick={handleDecrement}
                 data-cy={`test-cart-item-decrement-${data.id}`}
               >
                 -
@@ -98,7 +153,7 @@ const CartItem = ({
               className="flex items-center justify-center"
               data-cy={`test-cart-item-qty-${data.id}`}
             >
-              {count}
+              {data.quantity}
             </Text>
             {updateEnabled && (
               <Button
@@ -109,7 +164,7 @@ const CartItem = ({
                 variant="light"
                 bg={'transparent'}
                 color="var(--testColor)"
-                onClick={handler.increment}
+                onClick={handleIncrement}
                 data-cy={`test-cart-item-increment-${data.id}`}
               >
                 +
@@ -123,7 +178,7 @@ const CartItem = ({
           <Button
             variant="transparent"
             color="red"
-            onClick={() => removeItem(data, count)}
+            onClick={() => removeItem(data)}
             data-cy={`test-cart-item-remove-${data.id}`}
           >
             <IconTrash />
@@ -134,34 +189,13 @@ const CartItem = ({
   );
 };
 
-type CartType = {
-  user?: UserMetadata | null;
-  cart: components['schemas']['Carts'] | undefined;
-  updateCart?: {
-    removeCartItem: (
-      product: components['schemas']['Products'],
-      quantity: number
-    ) => void;
-    addCartItem: (
-      product: components['schemas']['Products'],
-      quantity: number
-    ) => void;
-    updateCartItem: (
-      product: components['schemas']['Products'],
-      quantity: number
-    ) => void;
-  };
-  isLoading?: boolean;
-  updateEnabled?: boolean;
-};
-
-export const CartTable = ({ cart, updateCart, updateEnabled }: CartType) => {
+export const CartTable = (data: CartTableType) => {
   return (
     <Table>
       <Table.Thead>
         <Table.Tr>
           <Table.Th>
-            <p className="uppercase text-center">Product</p>
+            <p className="uppercase">Product</p>
           </Table.Th>
           <Table.Th>
             <p className="uppercase text-center">Discount</p>
@@ -172,26 +206,50 @@ export const CartTable = ({ cart, updateCart, updateEnabled }: CartType) => {
           <Table.Th>
             <p className="uppercase text-center">Quantity</p>
           </Table.Th>
-          {updateEnabled && <Table.Th></Table.Th>}
+          {data.updateEnabled && <Table.Th></Table.Th>}
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
-        {cart?.products?.map((item, index) => (
-          <>
-            <CartItem
-              updateEnabled={updateEnabled}
-              index={index}
-              data={item}
-              removeItem={updateCart?.removeCartItem}
-            />
-          </>
-        ))}
+        {data.updateEnabled &&
+          data.data?.products?.map((item, index) => (
+            <>
+              <CartItem
+                updateEnabled={data.updateEnabled}
+                index={index}
+                data={item}
+                setData={data.setData}
+                removeItem={data.updateCart?.removeCartItem}
+              />
+            </>
+          ))}
       </Table.Tbody>
     </Table>
   );
 };
 
 export const Cart = ({ user, cart, isLoading, updateCart }: CartType) => {
+  const [cartDrift, setCartDrift] = useState<boolean>(false);
+  const [cartData, setCartData] = useState<
+    components['schemas']['Carts'] | undefined
+  >();
+
+  useEffect(() => {
+    if (!isLoading && cart) setCartData(cart);
+  }, [cart, isLoading]);
+
+  useEffect(() => {
+    if (cartData?.products && cart?.products) {
+      if (!arraysEqual(cartData.products, cart?.products)) setCartDrift(true);
+      else setCartDrift(false);
+    }
+  }, [cart, cartData]);
+
+  const handleReset = () => {
+    setCartData(cart);
+  };
+  const handleUpdateCart = () => {
+    if (cartData?.products) updateCart?.updateCartItem(cartData?.products);
+  };
   return (
     <div className="main-wrapper">
       <div className="flex items-end h-[25px]">
@@ -205,10 +263,31 @@ export const Cart = ({ user, cart, isLoading, updateCart }: CartType) => {
                 <div className="basket-wrapper lg:w-fit w-[100%] pr-4">
                   <div className="basket-container relative">
                     <CartTable
-                      cart={cart}
+                      data={cartData}
+                      setData={setCartData}
                       updateCart={updateCart}
                       updateEnabled={true}
                     />
+                    {cartDrift && (
+                      <div className="w-full flex justify-end">
+                        <Button
+                          color="var(--testColor)"
+                          mr={2}
+                          radius={5}
+                          onClick={handleUpdateCart}
+                        >
+                          Update
+                        </Button>
+                        <Button
+                          type="reset"
+                          color="maroon"
+                          radius={5}
+                          onClick={handleReset}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div
@@ -236,11 +315,7 @@ export const Cart = ({ user, cart, isLoading, updateCart }: CartType) => {
                       className="w-full h-full"
                       data-cy={'test-checkout-btn'}
                     >
-                      <Button
-                        w={'100%'}
-                        variant="filled"
-                        color={'var(--testColor)'}
-                      >
+                      <Button w={'100%'} className="!bg-[var(--testColor)]">
                         Checkout
                       </Button>
                     </Link>

@@ -40013,16 +40013,16 @@ var app3 = (0, import_express3.default)();
 app3.get("/products/:category", async (req, res) => {
   const { category } = req.params;
   const { filter } = req.query;
-  const currWeek = (0, import_dayjs.default)().startOf("week").format();
+  const currWeek = (0, import_dayjs.default)().subtract(1, "month").startOf("month").format();
   let { data: categoryList, error: categoryListError } = await supabase.from("Categories").select().eq("type", category);
   if (categoryList && categoryList.length > 0) {
     try {
       let data, error2;
       switch (category) {
         case "new": {
-          let { data: newArrival, error: newArrivalError } = await supabase.from("Products").select("*");
+          let { data: newArrival, error: newArrivalError } = await supabase.from("Products").select();
           newArrival = newArrival.filter((item) => {
-            const itemWeek = (0, import_dayjs.default)(item.created_at).startOf("week").format();
+            const itemWeek = (0, import_dayjs.default)(item.created_at).startOf("month").format();
             if (itemWeek === currWeek)
               return item;
           });

@@ -12,17 +12,17 @@ import { Column } from 'primereact/column';
 import { components } from '@/shared/types/api';
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import { Grid, Table, Text } from '@mantine/core';
+import { Flex, Table } from '@mantine/core';
 
 const rowExpansionTemplate = (data: components['schemas']['Orders']) => {
   return (
-    <div className="p-3 w-[60%] bg-gray-100 flex items-center justify-center">
+    <div className="p-3 w-[100%] bg-gray-100 flex items-center justify-center">
       <div className="w-[80%]">
         <Table>
           <Table.Thead>
             <Table.Tr>
               <Table.Th>
-                <p className="uppercase text-center">Product</p>
+                <p className="uppercase">Product</p>
               </Table.Th>
               <Table.Th>
                 <p className="uppercase text-center">Discount</p>
@@ -47,6 +47,7 @@ const rowExpansionTemplate = (data: components['schemas']['Orders']) => {
                       {item?.productImages.map((image, index) => {
                         return (
                           <Image
+                            sizes="100%"
                             data-cy={`test-cart-item-image-${item.id}`}
                             key={index}
                             alt={item.productName}
@@ -105,6 +106,41 @@ const rowExpansionTemplate = (data: components['schemas']['Orders']) => {
             ))}
           </Table.Tbody>
         </Table>
+        <div>
+          <h1 className="uppercase text-[15px] border-b">Order Details</h1>
+          <div className="flex justify-between mt-4">
+            <div className="mr-5">
+              <Flex gap={3} className='my-1'>
+                <p className="text-[#7b7b7b] text-[14px]">Order No:</p>
+                <p className=" text-[14px]">{data.id}</p>
+              </Flex>
+              <Flex gap={3} className='my-1'>
+                <p className="text-[#7b7b7b] text-[14px]">Date:</p>
+                <p className=" text-[14px]">
+                  {dayjs(data.created_at).format('DD/MM/YYYY')}
+                </p>
+              </Flex>
+              <Flex gap={3} className='my-1'>
+                <p className="text-[#7b7b7b] text-[14px]">Payment Method:</p>
+                <p className=" text-[14px]">-</p>
+              </Flex>
+            </div>
+            <div>
+              <Flex gap={3} className='my-1'>
+                <p className="text-[#7b7b7b] text-[14px]">Subtotal:</p>
+                <p className=" text-[14px]">${data.total}</p>
+              </Flex>
+              <Flex gap={3} className='my-1'>
+                <p className="text-[#7b7b7b] text-[14px]">Shipping:</p>
+                <p className=" text-[14px]">Free</p>
+              </Flex>
+              <Flex gap={3} className='my-1'>
+                <p className="text-[#7b7b7b] text-[14px]">Total:</p>
+                <p className=" text-[14px]">${data.total}</p>
+              </Flex>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -152,16 +188,16 @@ const Orders = () => {
           onRowToggle={(e) => {
             setExpandedRows(e.data);
           }}
-          paginator={orderData?.data && orderData?.data.length > 10}
-          rows={10}
-          rowsPerPageOptions={[10, 20, 50]}
+          paginator={orderData?.data && orderData?.data.length > 9}
+          rows={5}
+          rowsPerPageOptions={[5, 15, 35]}
           width={400}
           tableStyle={{
             width: '90%',
           }}
           showGridlines
           style={{
-            height: '400px',
+            minHeight: '400px',
           }}
           header={<h1>Orders</h1>}
           rowExpansionTemplate={rowExpansionTemplate}
@@ -207,7 +243,7 @@ const Orders = () => {
           />
           <Column
             field="created_at"
-            header="Purchased Date"
+            header="Purchased Date "
             headerStyle={{
               background: 'rgba(247, 249, 252, 0.80)',
               color: 'var(--testColor',

@@ -9,21 +9,21 @@ const Search = ({ params }: { params: { search: string } }) => {
     <div className="main-wrapper">
       <div className="flex flex-wrap justify-between relative pt-5">
         <div className="small-products-container">
-          {productsError ? (
-            <p>No products to display.</p>
-          ) : productsIsLoading ? (
+          {(!data && productsIsLoading) || productsError ? (
             <SkeletonContainer
-              w={250}
+              w={'calc(100%/5 - 10px)'}
               h={500}
-              repeat={8}
+              repeat={10}
               mr={5}
               ml={5}
               mb={5}
               mt={5}
               wrap={true}
             />
+          ) : !data ? (
+            <p>No products for {params.search} found.</p>
           ) : (
-            data?.map((product, index) => (
+            data.map((product, index) => (
               <Small id={product.id} key={index} product={product} />
             ))
           )}

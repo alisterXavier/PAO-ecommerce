@@ -57,10 +57,17 @@ function Queries(queries: Queries, session?: Session) {
       useSwr(['useGetProductByProductId' + id], () =>
         queries.useGetProductByProductId(id)
       ),
-    useGetCartByUserId: (id?: string): SWRResponse<CartResponse> => {
+    useGetCartByUserId: ({
+      id,
+      options,
+    }: {
+      id?: string;
+      options?: SWRConfiguration;
+    }): SWRResponse<CartResponse> => {
       return useSwr(
         session && id && ['useGetCartByUserId'],
-        () => session && id && queries.useGetCartByUserId(id, session)
+        () => session && id && queries.useGetCartByUserId(id, session),
+        options
       );
     },
     useGetProductsBySearch: (

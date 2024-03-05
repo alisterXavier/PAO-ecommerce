@@ -6,12 +6,10 @@ import {
   Combobox,
   Flex,
   Group,
-  InputBase,
   PasswordInput,
   Radio,
   TextInput,
   useCombobox,
-  Text,
   Modal,
 } from '@mantine/core';
 import axios from 'axios';
@@ -24,59 +22,25 @@ import { useDisclosure } from '@mantine/hooks';
 import Link from 'next/link';
 import { useOrders } from '@/shared/hooks/order';
 import { SkeletonContainer } from '../Components/SkeletonComp';
-import { useRouter } from 'next/navigation';
+import { z } from 'zod';
+import { UseFormReturnType, useForm, zodResolver } from '@mantine/form';
 
-type checkoutInformationType = {
-  name: {
-    first: {
-      state?: string;
-      setState: React.Dispatch<React.SetStateAction<string | undefined>>;
-    };
-    last: {
-      state?: string;
-      setState: React.Dispatch<React.SetStateAction<string | undefined>>;
-    };
-  };
-  postal: {
-    state?: string;
-    setState: React.Dispatch<React.SetStateAction<string | undefined>>;
-  };
-  payment: {
-    state?: string;
-    setState: React.Dispatch<React.SetStateAction<string | undefined>>;
-  };
-  country: {
-    state?: string;
-    setState: React.Dispatch<React.SetStateAction<string | undefined>>;
-  };
-  city: {
-    state?: string;
-    setState: React.Dispatch<React.SetStateAction<string | undefined>>;
-  };
-};
-type BillingType = {
-  name: {
-    first?: string;
-    last?: string;
-  };
-  postal?: string;
-  country?: string;
-  payment?: string;
-  city?: string;
-};
+const checkoutSchema = z.object({
+  information: z.object({
+    first_name: z.string().min(4),
+    last_name: z.string().min(4),
+    postal: z.string().optional(),
+    country: z.string().optional(),
+    city: z.string().optional(),
+    payment: z.enum(['Apple Pay', 'Google Pay', 'Credit/Debit Card']),
+  }),
+});
+export type formSchema = z.infer<typeof checkoutSchema>;
 
-const CountriesList = ({
-  country,
-  city,
+const CountriesCitiesList = ({
+  form,
 }: {
-  country: {
-    state?: string;
-    setState: React.Dispatch<React.SetStateAction<string | undefined>>;
-  };
-  city: {
-    state?: string;
-    setState: React.Dispatch<React.SetStateAction<string | undefined>>;
-  };
+  form: UseFormReturnType<formSchema>;
 }) => {
   const countryCombo = useCombobox({
     onDropdownClose: () => countryCombo.resetSelectedOption(),
@@ -139,9 +103,9 @@ const CountriesList = ({
   return (
     <>
       <ComboboxWrapper
+        form={form}
         search={countrySearch}
         setSearch={setCountrySearch}
-        setState={country.setState}
         label="Country"
         comboState={countryCombo}
       >
@@ -149,9 +113,9 @@ const CountriesList = ({
       </ComboboxWrapper>
 
       <ComboboxWrapper
+        form={form}
         search={citySearch}
         setSearch={setCitySearch}
-        setState={city.setState}
         comboState={cityCombo}
         label="City"
       >
@@ -161,22 +125,15 @@ const CountriesList = ({
   );
 };
 
-const Payment = ({
-  value,
-  setValue,
-}: {
-  value?: string;
-  setValue: React.Dispatch<React.SetStateAction<string | undefined>>;
-}) => {
+const Payment = ({ form }: { form: UseFormReturnType<formSchema> }) => {
   return (
     <>
       <h1 className="text-[17px] border-b border-gray-500 m-0">
-        Payment Method
+        Payment Method *
       </h1>
       <div>
         <Radio.Group
-          value={value}
-          onChange={setValue}
+          {...form.getInputProps('information.payment')}
           name="payment"
           color="lime.4"
           withAsterisk
@@ -199,7 +156,7 @@ const Payment = ({
             />
           </Group>
         </Radio.Group>
-        {value === 'Credit/Debit Card' ? (
+        {form.values.information.payment === 'Credit/Debit Card' ? (
           <div className="w-[50%]">
             <TextInput
               label="Card Number"
@@ -230,7 +187,7 @@ const Payment = ({
                   },
                 }}
                 label="Exipration Date"
-                description={<p className="relative z-[1]">(MM/YY)</p>}
+                description={<span className="relative z-[1]">(MM/YY)</span>}
                 w={300}
                 m={10}
               />
@@ -247,7 +204,7 @@ const Payment = ({
                   },
                 }}
                 label="CVV/CVC"
-                description={<p className="relative z-[1]">(MM/YY)</p>}
+                description={<span className="relative z-[1]">(MM/YY)</span>}
                 w={300}
                 m={10}
               />
@@ -262,25 +219,20 @@ const Payment = ({
 };
 
 const CheckoutInformation = ({
-  name,
-  postal,
-  country,
-  payment,
-  city,
-}: checkoutInformationType) => {
+  form,
+}: {
+  form: UseFormReturnType<formSchema>;
+}) => {
   return (
     <div>
       <div className="py-5">
         <div>
-          <Flex>
+          <Flex h={'80px'}>
             <TextInput
-              label="First Name"
+              label="First Name *"
               w={300}
               m={10}
-              value={name.first.state}
-              onChange={(event) => {
-                name.first.setState(event.currentTarget.value);
-              }}
+              {...form.getInputProps('information.first_name')}
               styles={{
                 input: {
                   border: '.1px solid var(--testColor)',
@@ -293,6 +245,7 @@ const CheckoutInformation = ({
               }}
             />
             <TextInput
+              {...form.getInputProps('information.last_name')}
               styles={{
                 input: {
                   border: '.1px solid var(--testColor)',
@@ -303,23 +256,16 @@ const CheckoutInformation = ({
                   zIndex: 1,
                 },
               }}
-              value={name.last.state}
-              onChange={(event) => {
-                name.last.setState(event.currentTarget.value);
-              }}
-              label="Last Name"
+              label="Last Name *"
               w={300}
               m={10}
             />
           </Flex>
           <h1 className="text-[17px] border-b border-gray-500">Address</h1>
           <Flex wrap={'wrap'}>
-            <CountriesList country={country} city={city} />
+            <CountriesCitiesList form={form} />
             <TextInput
-              value={postal.state}
-              onChange={(event) => {
-                postal.setState(event.currentTarget.value);
-              }}
+              {...form.getInputProps(`information.postal`)}
               styles={{
                 input: {
                   border: '.1px solid var(--testColor)',
@@ -338,13 +284,13 @@ const CheckoutInformation = ({
         </div>
       </div>
       <div>
-        <Payment value={payment.state} setValue={payment.setState} />
+        <Payment form={form} />
       </div>
     </div>
   );
 };
 
-const Billing = ({ name, postal, country, payment, city }: BillingType) => {
+const Billing = ({ form }: { form: UseFormReturnType<formSchema> }) => {
   return (
     <div>
       <Flex>
@@ -366,7 +312,7 @@ const Billing = ({ name, postal, country, payment, city }: BillingType) => {
               zIndex: 1,
             },
           }}
-          value={name?.first}
+          value={form.values.information.first_name}
           disabled
         />
         <TextInput
@@ -384,7 +330,7 @@ const Billing = ({ name, postal, country, payment, city }: BillingType) => {
               zIndex: 1,
             },
           }}
-          value={name?.last}
+          value={form.values.information.last_name}
           radius={0}
           w={150}
           m={10}
@@ -407,7 +353,7 @@ const Billing = ({ name, postal, country, payment, city }: BillingType) => {
               zIndex: 1,
             },
           }}
-          value={country}
+          value={form.values.information.country}
           radius={0}
           w={150}
           m={10}
@@ -428,7 +374,7 @@ const Billing = ({ name, postal, country, payment, city }: BillingType) => {
               zIndex: 1,
             },
           }}
-          value={city}
+          value={form.values.information.city}
           radius={0}
           w={150}
           m={10}
@@ -449,7 +395,7 @@ const Billing = ({ name, postal, country, payment, city }: BillingType) => {
               zIndex: 1,
             },
           }}
-          value={postal}
+          value={form.values.information.postal}
           radius={0}
           w={300}
           m={10}
@@ -472,7 +418,7 @@ const Billing = ({ name, postal, country, payment, city }: BillingType) => {
               zIndex: 1,
             },
           }}
-          value={payment}
+          value={form.values.information.payment}
           radius={0}
           w={300}
           m={10}
@@ -485,18 +431,26 @@ const Billing = ({ name, postal, country, payment, city }: BillingType) => {
 
 const Checkout = () => {
   const user = useSelector(selectAuthState);
-  const router = useRouter();
   const { cart, isLoading } = useCustomerCart(user?.data.user?.id);
   const { updateOrder } = useOrders({
     cartId: cart?.id,
     customerId: user?.data.user?.id,
   });
-  const [firstName, setFirstName] = useState<string>();
-  const [lastName, setLastName] = useState<string>();
-  const [postal, setPostal] = useState<string>();
-  const [country, setCountry] = useState<string>();
-  const [city, setCity] = useState<string>();
-  const [payment, setPayment] = useState<string>();
+  const form = useForm<formSchema>({
+    validateInputOnChange: true,
+    validate: zodResolver(checkoutSchema),
+    initialValues: {
+      information: {
+        first_name: '',
+        last_name: '',
+        postal: '',
+        country: '',
+        city: '',
+        payment: 'Credit/Debit Card',
+      },
+    },
+  });
+
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
@@ -515,37 +469,13 @@ const Checkout = () => {
                   Checkout
                 </h1>
               </div>
-              <CheckoutInformation
-                name={{
-                  first: {
-                    state: firstName,
-                    setState: setFirstName,
-                  },
-                  last: {
-                    state: lastName,
-                    setState: setLastName,
-                  },
-                }}
-                postal={{ state: postal, setState: setPostal }}
-                country={{ state: country, setState: setCountry }}
-                city={{ state: city, setState: setCity }}
-                payment={{ state: payment, setState: setPayment }}
-              />
+              <CheckoutInformation form={form} />
             </div>
             <div className="w-[30%] p-5 text-white">
               <div className="bg-[var(--testColor)]">
                 <div className="px-5 pt-1">
                   <h1 className="text-white">Invoice</h1>
-                  <Billing
-                    name={{
-                      first: firstName,
-                      last: lastName,
-                    }}
-                    postal={postal}
-                    country={country}
-                    payment={payment}
-                    city={city}
-                  />
+                  <Billing form={form} />
                 </div>
                 <div
                   className="checkout  sticky top-[var(--nav-height)] h-fit p-5"
@@ -555,12 +485,12 @@ const Checkout = () => {
                     <div className="w-full flex justify-between items-end">
                       <p className=" text-[18px] my-0 flex items-center uppercase">
                         Total Items
-                        <p
+                        <span
                           className={'ml-1 text-white'}
                           data-cy="test-selected-items"
                         >
                           ({cart?.products?.length})
-                        </p>
+                        </span>
                       </p>
                       <p
                         className="text-xs cursor-pointer underline"
@@ -577,11 +507,11 @@ const Checkout = () => {
                     </div>
                     <Button
                       w={'100%'}
-                      variant="white"
-                      color={'var(--testColor)'}
-                      onClick={async () => {
-                        const d = updateOrder(cart.id, user?.data.user?.id);
-                        console.log(await d);
+                      className="!bg-white !text-[var(--testColor)]"
+                      onClick={() => {
+                        if (!form.validate().hasErrors) {
+                          updateOrder(cart.id, user?.data.user?.id);
+                        }
                       }}
                     >
                       Pay
@@ -591,7 +521,7 @@ const Checkout = () => {
               </div>
             </div>
             <Modal opened={opened} onClose={close} size={'80%'}>
-              <CartTable cart={cart} />
+              <CartTable data={cart} updateEnabled={false} />
               <Flex justify={'end'} mt={5}>
                 <Link href="/cart">
                   <Button className="" color="var(--testColor)">

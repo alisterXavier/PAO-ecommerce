@@ -1,18 +1,21 @@
 import { Combobox, ComboboxStore, InputBase } from '@mantine/core';
+import { UseFormReturnType } from '@mantine/form';
 import React from 'react';
+import { formSchema } from './page';
 
 type comboWrapperTypes = {
   comboState: ComboboxStore;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
-  setState: React.Dispatch<React.SetStateAction<string | undefined>>;
   search: string;
   children: React.ReactNode;
-  label: string
+  label: string;
+  form: UseFormReturnType<formSchema>;
 };
+
 const ComboboxWrapper = ({
   comboState,
+  form,
   setSearch,
-  setState,
   search,
   label,
   children,
@@ -23,7 +26,7 @@ const ComboboxWrapper = ({
       width={300}
       store={comboState}
       onOptionSubmit={(val) => {
-        setState(val);
+        form.setFieldValue(`information.${label}`, val);
         setSearch(val);
         comboState.closeDropdown();
       }}
@@ -41,8 +44,8 @@ const ComboboxWrapper = ({
             },
           }}
           value={search}
-          onChange={(event) => setSearch(event.currentTarget.value)}
           label={label}
+          onChange={(event) => setSearch(event.currentTarget.value)}
           m={10}
           w={300}
           rightSection={<Combobox.Chevron />}

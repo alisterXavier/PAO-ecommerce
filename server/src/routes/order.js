@@ -33,7 +33,7 @@ app.post('/order/:customerId/:cartId', authUser, async (req, res) => {
         .status(400)
         .json({ function: 'Orders insert', error: error.message });
 
-    //clearing the user's cart here.
+    // Clearing the user's cart here.
     const { err: deleteErr } = await supabase
       .from('Carts')
       .delete()

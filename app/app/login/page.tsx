@@ -145,6 +145,16 @@ const LoginInputs = ({
           });
           setIsSignUp(false);
         }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err, {
+          style: {
+            borderRadius: '10px',
+            background: '#333',
+            color: '#fff',
+          },
+        });
       });
   };
 
@@ -227,7 +237,13 @@ const Login = () => {
                 {/* Signin Image */}
                 <motion.div className="absolute w-[45%] h-full" ref={imageRef}>
                   <figure className="absolute w-full h-full bg-[var(--nightBlue)]">
-                    <Image alt="" src={womenLogin} className="absolute" fill />
+                    <Image
+                      sizes="100%"
+                      alt=""
+                      src={womenLogin}
+                      className="absolute"
+                      fill
+                    />
                   </figure>
                 </motion.div>
 
@@ -237,7 +253,13 @@ const Login = () => {
                   ref={imageRef}
                 >
                   <figure className="absolute w-full h-full bg-[var(--nightBlue)]">
-                    <Image alt="" src={mensLogin} className="absolute" fill />
+                    <Image
+                      sizes="100%"
+                      alt=""
+                      src={mensLogin}
+                      className="absolute"
+                      fill
+                    />
                   </figure>
                 </motion.div>
               </>

@@ -41,6 +41,7 @@ const Small = ({ product, id }: SmallProps) => {
                 alt="asdsad"
                 src={image}
                 fill
+                sizes="100%"
                 quality={100}
                 style={{
                   objectFit: 'contain',

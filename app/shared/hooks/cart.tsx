@@ -19,13 +19,14 @@ const calculateTotalPrice = (
 export const useCustomerCart = (id?: string) => {
   const { requests, queries } = useSwrInstance();
   const [cart, setCart] = useState<CartResponse>();
-  const { data, isLoading, error, mutate } = queries.useGetCartByUserId(id);
+  const options = { refreshInterval: 1000 };
+  const { data, isLoading, error, mutate } = queries.useGetCartByUserId({
+    id,
+    options,
+  });
 
   const common = async (
-    updatedList: {
-      id: string;
-      quantity: number;
-    }[],
+    updatedList: components['schemas']['Products'][],
     total: number
   ) => {
     const cartData: CartUpdate = {
@@ -42,14 +43,16 @@ export const useCustomerCart = (id?: string) => {
     product: components['schemas']['Products'],
     quantity: number
   ) => {
-    const updatedList = data?.data?.products
+    const updatedList: (components['schemas']['Products'] & {
+      quantity: number;
+    })[] = cart?.data?.products
       ? [
-          ...data?.data.products.map((i) => {
-            return { id: i.id, quantity: i.quantity };
+          ...cart?.data.products.map((i) => {
+            return { ...i, quantity: i.quantity };
           }),
-          { id: product.id, quantity: quantity },
+          { ...product, quantity: quantity },
         ]
-      : [{ id: product.id, quantity: 1 }];
+      : [{ ...product, quantity: quantity }];
 
     const total =
       (data?.data.total ?? 0) +
@@ -58,43 +61,56 @@ export const useCustomerCart = (id?: string) => {
   };
 
   const updateCartItem = async (
-    product: components['schemas']['Products'],
-    quantity: number
+    product:
+      | components['schemas']['Products']
+      | (components['schemas']['Products'] & { quantity: number })[],
+    quantity?: number
   ) => {
-    const updatedList = data?.data.products.map((i) => {
-      if (i.id === product.id) return { id: product.id, quantity: quantity };
+    let updatedList, total;
+    if (!Array.isArray(product)) {
+      updatedList = cart?.data.products.map((i) => {
+        if (i.id === product.id) return { ...product, quantity: quantity };
 
-      return { id: i.id, quantity: i.quantity };
-    });
+        return { ...i, quantity: i.quantity };
+      }) as (components['schemas']['Products'] & {
+        quantity: number;
+      })[];
+    } else {
+      updatedList = product as (components['schemas']['Products'] & {
+        quantity: number;
+      })[];
+    }
 
-    const total =
-      (data?.data.total ?? 0) -
-      calculateTotalPrice(product.price, product.discount, quantity);
+    total = updatedList.reduce((a, b) => {
+      return a + calculateTotalPrice(b.price, b.discount, b.quantity);
+    }, 0);
 
     common(updatedList ?? [], total);
   };
 
-  const removeCartItem = async (
-    product: components['schemas']['Products'],
-    quantity: number
-  ) => {
-    const updatedList: { id: string; quantity: number }[] =
+  const removeCartItem = async (product: components['schemas']['Products']) => {
+    const updatedList: (components['schemas']['Products'] & {
+      quantity: number;
+    })[] =
       cart?.data.products
         .filter((prod) => prod.id !== product.id)
         .map((i) => {
           return {
-            id: i.id,
+            ...i,
             quantity: i.quantity,
           };
         }) ?? [];
 
     const total =
-      cart && cart.data.products.length > 0
-        ? (cart?.data.total ?? 0) -
-          calculateTotalPrice(product.price, product.discount, quantity)
-        : 0;
+      updatedList.reduce((a, b) => {
+        return a + calculateTotalPrice(b.price, b.discount, b.quantity);
+      }, 0) ?? 0;
 
-    common(updatedList, total);
+    common(updatedList ?? [], total);
+  };
+
+  const emptyCart = async () => {
+    mutate(undefined);
   };
 
   const existingCartHasData = cart && cart.data;
@@ -106,10 +122,14 @@ export const useCustomerCart = (id?: string) => {
       (!existingCartHasData ||
         !arraysEqual(data.data.products, cart.data.products));
 
-    if (shouldUpdateCart) {
+    const isError = error && !isLoading && !data && true;
+
+    if (isError) {
+      setCart(undefined);
+    } else if (shouldUpdateCart) {
       setCart(data);
     }
-  }, [isLoading, data, cart, existingCartHasData]);
+  }, [isLoading, data, cart, existingCartHasData, error]);
 
   return {
     cart: cart?.data,
@@ -119,6 +139,7 @@ export const useCustomerCart = (id?: string) => {
       addCartItem,
       removeCartItem,
       updateCartItem,
+      emptyCart,
     },
   };
 };

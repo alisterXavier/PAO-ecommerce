@@ -47,7 +47,7 @@ const Category = ({ params }: { params: { category: string } }) => {
         <div className="small-products-container">
           {(!data && productsIsLoading) || productsError ? (
             <SkeletonContainer
-              w={250}
+              w={'calc(100%/5 - 10px)'}
               h={500}
               repeat={10}
               mr={5}

@@ -1,6 +1,5 @@
-import './styles.css';
 import { useEffect, useRef, useState } from 'react';
-import { Account, Buttons, LoginSignUp, Logo } from './Header';
+import { Account, Buttons, Dropdown, LoginSignUp, Logo } from './Header';
 import { usePathname, useRouter } from 'next/navigation';
 import { UserMetadata } from '@supabase/supabase-js';
 import Link from 'next/link';
@@ -38,6 +37,8 @@ const NavbarCart = ({
         return total + b.quantity;
       }, 0);
       setCount(totalProducts);
+    } else {
+      setCount(0);
     }
   }, [cart]);
 
@@ -81,12 +82,12 @@ export const Navbar = ({ user, path }: NavbarType) => {
       id === 'home'
         ? '0px'
         : id === 'men'
-        ? '90px 0px'
+        ? '100px 0px'
         : id === 'women'
-        ? '180px 0px'
+        ? '200px 0px'
         : id === 'kids'
-        ? '270px 0px'
-        : '360px 0px';
+        ? '300px 0px'
+        : '400px 0px';
     if (sliderRef.current) {
       (sliderRef.current as HTMLElement).style.translate = translate;
     }
@@ -99,10 +100,10 @@ export const Navbar = ({ user, path }: NavbarType) => {
   };
   const navChangeOnPath = useRef((path: string) => {
     const translateMap = {
-      Electronics: '360px 0px',
-      Men: '90px 0px',
-      Women: '180px 0px',
-      Kids: '270px 0px',
+      Electronics: '400px 0px',
+      Men: '100px 0px',
+      Women: '200px 0px',
+      Kids: '300px 0px',
       default: '0px',
     };
     var translate = path.split('/').reduce((acc, seg) => {
@@ -113,12 +114,13 @@ export const Navbar = ({ user, path }: NavbarType) => {
       (sliderRef.current as HTMLElement).style.translate = translate;
     }
   });
-
   const handleSearch = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       router.push(`/search/${(e.target as HTMLInputElement).value}`);
+      setSearchToggle(false);
     }
   };
+
   useEffect(() => {
     navChangeOnPath.current(path);
   }, [path]);
@@ -177,6 +179,7 @@ export const Navbar = ({ user, path }: NavbarType) => {
             </Link>
           </Buttons>
           <span className="navbar-item-slider" ref={sliderRef} />
+          <Dropdown />
         </div>
         <Logo />
         <div className="flex">

@@ -143,12 +143,13 @@ export const FooterSection = ({ enableDark }: { enableDark: boolean }) => (
       </div>
       <div className="right-section flex flex-col items-start justify-end w-[40%]">
         <div className="social-medias flex">
-          <IconBrandInstagram size={30} color="var(--testColor)" />
-          <IconBrandFacebook size={30} color="var(--testColor)" />
-          <IconBrandTwitter size={30} color="var(--testColor)" />
+          <IconBrandInstagram className='mr-3' size={30} color="var(--testColor)" />
+          <IconBrandFacebook className='mr-3' size={30} color="var(--testColor)" />
+          <IconBrandTwitter className='mr-3' size={30} color="var(--testColor)" />
         </div>
         <figure className="relative w-[300px] h-[200px]">
           <Image
+            sizes="100%"
             alt="logo"
             src={logo}
             fill

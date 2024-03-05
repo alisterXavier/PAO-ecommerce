@@ -1,14 +1,15 @@
 /** @type {import('next').NextConfig} */
 
 const urls = [
+  'lh3.googleusercontent.com', // user avatar
+
   'media.boohoo.com',
   'lp2.hm.com',
-
   'm.media-amazon.com',
   'media.veli.store',
   'www.bhphotovideo.com',
   'static.bhphoto.com',
-  'zoommer.ge'
+  'zoommer.ge',
 ];
 
 const nextConfig = {

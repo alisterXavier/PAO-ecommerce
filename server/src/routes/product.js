@@ -5,11 +5,10 @@ import dayjs from 'dayjs';
 
 const app = express();
 
-
 app.get('/products/:category', async (req, res) => {
   const { category } = req.params;
   const { filter } = req.query;
-  const currWeek = dayjs().startOf('week').format();
+  const currWeek = dayjs().subtract(1, 'month').startOf('month').format();
 
   let { data: categoryList, error: categoryListError } = await supabase
     .from('Categories')
@@ -23,9 +22,9 @@ app.get('/products/:category', async (req, res) => {
         case 'new': {
           let { data: newArrival, error: newArrivalError } = await supabase
             .from('Products')
-            .select('*');
+            .select();
           newArrival = newArrival.filter((item) => {
-            const itemWeek = dayjs(item.created_at).startOf('week').format();
+            const itemWeek = dayjs(item.created_at).startOf('month').format();
             if (itemWeek === currWeek) return item;
           });
           data = newArrival;

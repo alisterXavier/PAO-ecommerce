@@ -1,6 +1,6 @@
 'use client';
 import '@mantine/core/styles.css';
-import { Combobox, useCombobox } from '@mantine/core';
+import { Combobox, Flex, Menu, Text, useCombobox } from '@mantine/core';
 import { IconUser } from '@tabler/icons-react';
 import Image from 'next/image';
 import * as React from 'react';
@@ -17,14 +17,50 @@ interface IButton {
   onMouseLeave: (e: React.MouseEvent) => void;
 }
 
+export const Dropdown = () => {
+  return (
+    <Menu
+      trigger="hover"
+      width={'200px'}
+      openDelay={100}
+      closeDelay={400}
+      withArrow
+    >
+      <Menu.Target>
+        <Menu.Label w={'100px'} className="flex items-center justify-center">
+          <Text className="armyText cursor-pointer">More</Text>
+        </Menu.Label>
+      </Menu.Target>
+      <Menu.Dropdown className="!border-none">
+        <Menu.Item color="var(--testColor)">
+          <Link href={'/category/new'} className="w-full h-full block">
+            New Arrivals
+          </Link>
+        </Menu.Item>
+        <Menu.Item color="var(--testColor)">
+          <Link href={'/category/deals'} className="w-full h-full block">
+            Sale
+          </Link>
+        </Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
+  );
+};
 export const Logo = () => {
   return (
     <div className="navbar-item ml-auto mr-auto">
       <Link href="/" className="navbar-item-header armyText">
         <figure className="relative w-[100px] h-[100px]">
-          <Image alt="logo" src={logo}    style={{
+          <Image
+            sizes="100%"
+            alt="logo"
+            src={logo}
+            style={{
               objectFit: 'contain',
-            }} fill data-cy={'test-logo'}/>
+            }}
+            fill
+            data-cy={'test-logo'}
+          />
         </figure>
       </Link>
     </div>
@@ -94,7 +130,7 @@ export const Account = ({ user }: { user: UserMetadata }) => {
 
   return (
     <div
-      className="navbar-item navbar-right-item navbar-item-account w-[400px]"
+      className="navbar-item navbar-right-item navbar-item-account !w-[150px]"
       data-cy={'test-user'}
     >
       <Combobox
@@ -105,20 +141,32 @@ export const Account = ({ user }: { user: UserMetadata }) => {
           combobox.closeDropdown();
         }}
       >
-        <Combobox.Target>
-          <figure
-            className="navbar-account-logo"
-            onClick={() => combobox.toggleDropdown()}
-          >
-            {user.avatar_url ? (
-              <Image src={user.avatar_url} alt={'UserProfile'} fill />
-            ) : (
-              <IconUser />
-            )}
-          </figure>
+        <Combobox.Target targetType="button">
+          <Flex align={'center'} onClick={() => combobox.toggleDropdown()}>
+            <p className="mr-2 cursor-pointer">
+              {user.user_metadata.full_name}
+            </p>
+            <figure className="navbar-account-logo">
+              {user.user_metadata.avatar_url ? (
+                <Image
+                  sizes="100%"
+                  src={user.user_metadata.avatar_url}
+                  alt={'UserProfile'}
+                  fill
+                />
+              ) : (
+                <IconUser />
+              )}
+            </figure>
+          </Flex>
         </Combobox.Target>
 
-        <Combobox.Dropdown w={'200px'} data-cy={'test-user-options'} mt={15}>
+        <Combobox.Dropdown
+          w={'200px'}
+          data-cy={'test-user-options'}
+          mt={15}
+          mr={10}
+        >
           <Combobox.Options w={'200px'}>{options}</Combobox.Options>
         </Combobox.Dropdown>
       </Combobox>

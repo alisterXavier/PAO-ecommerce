@@ -48,16 +48,18 @@ export const HeaderCarousel = () => {
                 >
                   Explore Men&apos;s Fashion
                 </h1>
-                <Button
-                  mt={device ? 5 : 0}
-                  w={125}
-                  h={40}
-                  radius={2}
-                  variant="white"
-                  className="shop-now-btn"
-                >
-                  <Link href="/category/Men">Explore</Link>
-                </Button>
+                <Link href="/category/Men">
+                  <Button
+                    mt={device ? 5 : 0}
+                    w={125}
+                    h={40}
+                    radius={2}
+                    variant="white"
+                    className="shop-now-btn !text-[var(--testColor)]"
+                  >
+                    Explore
+                  </Button>
+                </Link>
               </div>
             </div>
 
@@ -65,7 +67,7 @@ export const HeaderCarousel = () => {
               className={`relative ${device ? 'w-[100%]' : 'w-[55%]'}  h-full`}
             >
               <figure className="absolute w-full h-full">
-                <Image alt="red" src={menSliderImage} fill />
+                <Image sizes="100%" alt="red" src={menSliderImage} fill />
               </figure>
             </div>
           </div>
@@ -86,7 +88,7 @@ export const HeaderCarousel = () => {
               }`}
             >
               <figure className="absolute w-full h-full">
-                <Image alt="red" src={womenSliderImage} fill />
+                <Image sizes="100%" alt="red" src={womenSliderImage} fill />
               </figure>
             </div>
 
@@ -103,15 +105,17 @@ export const HeaderCarousel = () => {
                 >
                   Fresh new start
                 </h1>
-                <Button
-                  variant="white"
-                  radius={2}
-                  w={125}
-                  h={40}
-                  className="shop-now-btn mr-1"
-                >
-                  <Link href="/category/Women">Start</Link>
-                </Button>
+                <Link href="/category/Women">
+                  <Button
+                    variant="white"
+                    radius={2}
+                    w={125}
+                    h={40}
+                    className="shop-now-btn mr-1 !text-[var(--testColor)]"
+                  >
+                    Start now
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -127,7 +131,9 @@ export const HeaderCarousel = () => {
               } relative w-full h-full flex flex-col justify-center items-end z-[1] p-4`}
             >
               <div
-                className={`flex flex-col ${device ? 'items-start' : 'items-center'} w-[100%]`}
+                className={`flex flex-col ${
+                  device ? 'items-start' : 'items-center'
+                } w-[100%]`}
               >
                 <div className="transparent-gradient">
                   <h1
@@ -153,7 +159,7 @@ export const HeaderCarousel = () => {
                 device ? 'w-full h-[50%]' : 'right-0 top-0 w-[60%] h-[90%]'
               }`}
             >
-              <Image alt="red" src={electronicSliderImage} fill />
+              <Image sizes="100%" alt="red" src={electronicSliderImage} fill />
             </figure>
           </div>
         </div>

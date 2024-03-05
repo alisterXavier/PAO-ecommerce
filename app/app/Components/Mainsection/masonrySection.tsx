@@ -50,7 +50,10 @@ export const MasonryComp = () => {
           </>
         )}
         <div className="w-full text-right">
-          <Link className="text-white uppercase hover:underline" href="/discount">
+          <Link
+            className="text-white uppercase hover:underline"
+            href="/discount"
+          >
             Check Out now
           </Link>
         </div>
@@ -65,34 +68,34 @@ export const MasonryComp = () => {
         <div className="w-full masonry justify-center items-center">
           <Masonry columns={2} spacing={1}>
             <figure className={`relative w-[50%]`}>
-              <Image src={image1} alt="image" />
+              <Image sizes="100%" src={image1} alt="image" />
             </figure>
             <figure className={`relative w-[50%]`}>
-              <Image src={womenSliderImage} alt="image" />
+              <Image sizes="100%" src={womenSliderImage} alt="image" />
             </figure>
             <figure className={`relative w-[50%]`}>
-              <Image src={image4} alt="image" />
+              <Image sizes="100%" src={image4} alt="image" />
             </figure>
             <figure className={`relative w-[50%]`}>
-              <Image src={image5} alt="image" />
+              <Image sizes="100%" src={image5} alt="image" />
             </figure>
             <figure className={`relative w-[50%]`}>
-              <Image src={image8} alt="image" />
+              <Image sizes="100%" src={image8} alt="image" />
             </figure>
             <figure className={`relative w-[50%]`}>
               <Image src={image9} alt="image" />
             </figure>
             <figure className={`relative w-[50%]`}>
-              <Image src={womenSliderImage} alt="image" />
+              <Image sizes="100%" src={womenSliderImage} alt="image" />
             </figure>
             <figure className={`relative w-[50%]`}>
-              <Image src={image1} alt="image" />
+              <Image sizes="100%" src={image1} alt="image" />
             </figure>
             <figure className={`relative w-[50%]`}>
-              <Image src={image5} alt="image" />
+              <Image sizes="100%" src={image5} alt="image" />
             </figure>
             <figure className={`relative w-[50%]`}>
-              <Image src={image4} alt="image" />
+              <Image sizes="100%" src={image4} alt="image" />
             </figure>
           </Masonry>
         </div>

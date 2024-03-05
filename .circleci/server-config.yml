@@ -21,8 +21,16 @@ jobs:
       - run:
           name: Push to docker hub
           command: docker push registry.digitalocean.com/server101/server:v1.0
-
+  
+  publish-to-main-branch:
+    docker:
+      - image: cimg/base:2024.01
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: "SHA256:h3dWritaS+YZEvEuRDqLwqoyX+gA4PwvAhDh+aFmofw"
 workflows:
   the-great-depression:
     jobs:
       - create-docker-image-and-publish-to-dockerhub
+      - publish-to-main-branch
