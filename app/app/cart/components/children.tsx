@@ -11,22 +11,24 @@ import { arraysEqual } from '@/shared/helpers/debounce';
 type cartItemProps = components['schemas']['Products'] & {
   quantity: number;
 };
+type updateFunctions = {
+  removeCartItem: (product: components['schemas']['Products']) => void;
+  addCartItem: (
+    product: components['schemas']['Products'],
+    quantity: number
+  ) => void;
+  updateCartItem: (
+    product:
+      | components['schemas']['Products']
+      | (components['schemas']['Products'] & { quantity: number })[],
+    quantity?: number
+  ) => void;
+};
+
 type CartType = {
   user?: UserMetadata | null;
   cart?: components['schemas']['Carts'] | undefined;
-  updateCart?: {
-    removeCartItem: (product: components['schemas']['Products']) => void;
-    addCartItem: (
-      product: components['schemas']['Products'],
-      quantity: number
-    ) => void;
-    updateCartItem: (
-      product:
-        | components['schemas']['Products']
-        | (components['schemas']['Products'] & { quantity: number })[],
-      quantity?: number
-    ) => void;
-  };
+  updateCart?: updateFunctions;
   isLoading?: boolean;
 };
 type updateEnabledCartTable = CartType & {
@@ -51,7 +53,7 @@ const CartItem = ({
   updateEnabled,
 }: {
   data: cartItemProps;
-  setData: React.Dispatch<
+  setData?: React.Dispatch<
     React.SetStateAction<components['schemas']['Carts'] | undefined>
   >;
   index: number;
@@ -210,18 +212,20 @@ export const CartTable = (data: CartTableType) => {
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
-        {data.updateEnabled &&
-          data.data?.products?.map((item, index) => (
-            <>
-              <CartItem
-                updateEnabled={data.updateEnabled}
-                index={index}
-                data={item}
-                setData={data.setData}
-                removeItem={data.updateCart?.removeCartItem}
-              />
-            </>
-          ))}
+        {data.data?.products?.map((item, index) =>
+          data.updateEnabled ? (
+            <CartItem
+              key={index}
+              updateEnabled={data.updateEnabled}
+              index={index}
+              data={item}
+              setData={data.setData}
+              removeItem={data.updateCart?.removeCartItem}
+            />
+          ) : (
+            <CartItem key={index} index={index} data={item} />
+          )
+        )}
       </Table.Tbody>
     </Table>
   );

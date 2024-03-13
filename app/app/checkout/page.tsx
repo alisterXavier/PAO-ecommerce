@@ -433,6 +433,7 @@ const Billing = ({ form }: { form: UseFormReturnType<formSchema> }) => {
 
 const Checkout = () => {
   const user = useSelector(selectAuthState);
+  
   const { cart, isLoading } = useCustomerCart(user?.data.user?.id);
   const { updateOrder } = useOrders({
     cartId: cart?.id,
@@ -523,8 +524,12 @@ const Checkout = () => {
                 </div>
               </div>
             </div>
-            <Modal opened={opened} onClose={close} size={'80%'}>
-              <CartTable data={cart} updateEnabled={false} />
+            <Modal opened={opened} onClose={close} size={'100%'}>
+              <CartTable
+                data={cart}
+                // setData={setCartData}
+                updateEnabled={false}
+              />
               <Flex justify={'end'} mt={5}>
                 <Link href="/cart">
                   <Button className="" color="var(--testColor)">

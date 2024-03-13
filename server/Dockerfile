@@ -31,7 +31,7 @@ COPY --from=BUILD /app/.env.test /app/.env
 RUN yarn install --production
 
 # Expose the required port
-EXPOSE 5001
+EXPOSE 80
 
 # Start the application
 CMD ["npm", "start"]

@@ -76,8 +76,10 @@ const SingleProduct = ({ params }: { params: { productId: string } }) => {
           <div className="relative flex flex-col items-center justify-end w-[100%] h-[100%]">
             {productIsLoading || productError || !data ? (
               <>
-                <SkeletonContainer w={270} h={220} repeat={1} mb={5} />
-                <SkeletonContainer w={70} h={70} repeat={4} mr={5} />
+                <SkeletonContainer w={300} h={450} repeat={1} mb={5} />
+                <div className='flex'>
+                  <SkeletonContainer w={70} h={70} repeat={4} mr={5} />
+                </div>
               </>
             ) : (
               <>
