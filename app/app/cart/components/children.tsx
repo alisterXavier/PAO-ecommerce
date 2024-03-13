@@ -61,7 +61,7 @@ const CartItem = ({
   updateEnabled?: boolean;
 }) => {
   const handleDecrement = () => {
-    if (data.quantity > 1)
+    if (data.quantity > 1 && setData)
       setData((prev) => {
         let updated = prev?.products.map((i) => {
           if (i.id === data.id) return { ...i, quantity: i?.quantity - 1 };
@@ -71,7 +71,7 @@ const CartItem = ({
       });
   };
   const handleIncrement = () => {
-    if (data.quantity < 10)
+    if (data.quantity < 10 && setData)
       setData((prev) => {
         let updated = prev?.products.map((i) => {
           if (i.id === data.id) return { ...i, quantity: i?.quantity + 1 };
