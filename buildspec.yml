@@ -17,6 +17,8 @@ phases:
       - yarn build
   post_build:
     commands:
+      - echo "Renaming .env.test to .env"
+      - mv .env.test .env
       - echo "Build completed"
 artifacts:
   files:
