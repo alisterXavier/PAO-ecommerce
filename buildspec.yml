@@ -1,0 +1,25 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - cd ./server
+      - echo "Installing dependencies..."
+      - sudo apt-get update
+      - sudo apt-get install -y nodejs
+      - yarn install
+  pre_build:
+    commands:
+      - yarn install
+  build:
+    commands:
+      - echo "Building the application..."
+      - yarn build
+  post_build:
+    commands:
+      - echo "Build completed"
+artifacts:
+  files:
+    - server/dist/**
+    - server/.env
+    - server/package.json

@@ -1,13 +1,11 @@
 'use client';
 import './globals.css';
-import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { NavbarComponent } from './Navbar/Navbar';
 import { usePathname } from 'next/navigation';
 import { MantineProvider, createTheme } from '@mantine/core';
 import { AppDispatch, store } from '@/shared/redux/store';
 import { Provider, useDispatch } from 'react-redux';
-// import { setAuthState } from '@/shared/redux/authSlice';
 import { supabase } from '@/shared/supabaseConfig';
 import { useEffect } from 'react';
 import { fetchSession, fetchUser } from '@/shared/redux/authSlice';
